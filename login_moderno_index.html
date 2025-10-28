@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login Moderno — Código de Michel</title>
+  <style>
+    :root{
+      --bg:#0f1724; --card:#0b1220; --glass: rgba(255,255,255,0.06);
+      --accent:#7c3aed; --accent-2:#06b6d4; --text:#e6eef8;
+      --soft:#8b98a6;
+    }
+    [data-theme="light"]{ --bg: #f6f8fb; --card:#ffffff; --glass: rgba(16,24,40,0.04); --accent:#6d28d9; --accent-2:#0891b2; --text:#0b1220; --soft:#4b5563 }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial; -webkit-font-smoothing:antialiased}
+
+    body{
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(124,58,237,0.12), transparent), radial-gradient(900px 400px at 90% 90%, rgba(6,182,212,0.08), transparent), var(--bg);
+      color:var(--text);
+      display:flex;align-items:center;justify-content:center;padding:24px;
+      transition:background 400ms ease, color 300ms ease;
+      overflow:hidden;
+    }
+
+    /* Animated floating orbs */
+    .orb{position:absolute;border-radius:50%;filter:blur(40px);opacity:0.7;mix-blend-mode:screen}
+    .orb.one{width:360px;height:360px;left:-80px;top:-60px;background:linear-gradient(135deg,var(--accent),transparent);animation:float 12s ease-in-out infinite}
+    .orb.two{width:260px;height:260px;right:-60px;bottom:-40px;background:linear-gradient(135deg,var(--accent-2),transparent);animation:float 10s ease-in-out infinite;animation-delay:2s}
+    @keyframes float{0%{transform:translateY(0) scale(1)}50%{transform:translateY(18px) scale(1.03)}100%{transform:translateY(0) scale(1)}}
+
+    /* Card */
+    .card-wrap{position:relative;z-index:2;display:grid;grid-template-columns:420px 1fr;gap:32px;align-items:center}
+    .card{width:420px;padding:28px;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);backdrop-filter: blur(8px);box-shadow: 0 10px 30px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.04);transform-style:preserve-3d;transition:transform 250ms ease, box-shadow 250ms}
+    .card:hover{transform:translateY(-6px) rotateX(2deg) rotateY(1deg);box-shadow: 0 18px 40px rgba(2,6,23,0.7)}
+
+    .brand{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+    .logo{width:54px;height:54px;border-radius:12px;display:grid;place-items:center;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:white;box-shadow:0 6px 18px rgba(12,8,30,0.5)}
+    h1{font-size:20px;margin:0}
+    p.lead{margin:4px 0 18px;color:var(--soft);font-size:13px}
+
+    form{display:flex;flex-direction:column;gap:12px}
+    .field{display:flex;flex-direction:column;gap:8px}
+    label{font-size:13px;color:var(--soft)}
+    input[type="email"],input[type="password"]{padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);color:var(--text);outline:none;transition:box-shadow 180ms, transform 120ms}
+    input::placeholder{color:rgba(255,255,255,0.3)}
+    input:focus{box-shadow:0 6px 18px rgba(99,102,241,0.12);transform:translateY(-2px);border-color:rgba(124,58,237,0.6)}
+
+    .row{display:flex;gap:12px;align-items:center;justify-content:space-between}
+    .checkbox{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--soft)}
+
+    .btn{margin-top:6px;padding:12px 14px;border-radius:12px;border:0;cursor:pointer;font-weight:600;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;box-shadow:0 8px 30px rgba(7,12,23,0.6);transform:translateZ(0);transition:transform 160ms ease, box-shadow 160ms}
+    .btn:active{transform:translateY(2px) scale(0.998);box-shadow:0 6px 18px rgba(7,12,23,0.6)}
+
+    .socials{display:flex;gap:12px;margin-top:8px}
+    .social{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;gap:10px;justify-content:center;background:transparent;cursor:pointer}
+
+    /* side illustration */
+    .side{width:360px;height:420px;border-radius:18px;padding:20px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:18px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03)}
+    .graphic{width:100%;height:270px;border-radius:14px;display:grid;place-items:center;position:relative;overflow:hidden}
+    .cube{width:160px;height:160px;background:conic-gradient(from 120deg, rgba(255,255,255,0.06), transparent 60%);border-radius:12px;transform-style:preserve-3d;animation:spin 6s linear infinite}
+    .cube:before,.cube:after{content:'';position:absolute;inset:6px;border-radius:8px;background:linear-gradient(180deg,var(--accent),var(--accent-2));filter:blur(12px);opacity:0.9}
+    @keyframes spin{0%{transform:rotateX(10deg) rotateY(0deg)}50%{transform:rotateX(20deg) rotateY(180deg)}100%{transform:rotateX(10deg) rotateY(360deg)}}
+
+    .muted{font-size:13px;color:var(--soft);text-align:center;padding:0 8px}
+
+    /* toggle */
+    .top-controls{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-bottom:8px}
+    .theme-toggle{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px;border-radius:10px;cursor:pointer}
+
+    /* small screens */
+    @media (max-width:880px){
+      .card-wrap{grid-template-columns:1fr;}
+      .side{order:2}
+    }
+
+    /* accessibility focus */
+    :focus{outline:2px solid rgba(124,58,237,0.18);outline-offset:3px}
+
+  </style>
+</head>
+<body data-theme="dark">
+  <div class="orb one" aria-hidden="true"></div>
+  <div class="orb two" aria-hidden="true"></div>
+
+  <div class="card-wrap" role="main">
+    <div class="card" aria-labelledby="login-title" id="login-card">
+      <div class="top-controls" aria-hidden="true">
+        <button class="theme-toggle" id="themeBtn" title="Cambiar modo">🌙</button>
+      </div>
+
+      <div class="brand">
+        <div class="logo" aria-hidden="true">CM</div>
+        <div>
+          <h1 id="login-title">Bienvenido de nuevo</h1>
+          <p class="lead">Inicia sesión para continuar con tu dashboard</p>
+        </div>
+      </div>
+
+      <form id="loginForm" novalidate>
+        <div class="field">
+          <label for="email">Correo</label>
+          <input id="email" name="email" type="email" inputmode="email" placeholder="tucorreo@ejemplo.com" required aria-required="true" autocomplete="username">
+        </div>
+
+        <div class="field">
+          <label for="password">Contraseña</label>
+          <input id="password" name="password" type="password" placeholder="●●●●●●●" required aria-required="true" autocomplete="current-password">
+        </div>
+
+        <div class="row">
+          <label class="checkbox"><input type="checkbox" id="remember"> Recuérdame</label>
+          <a href="#" style="color:var(--accent);font-size:13px;text-decoration:none">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        <button class="btn" type="submit">Iniciar sesión</button>
+
+        <div style="margin-top:6px;font-size:13px;color:var(--soft);text-align:center">o inicia con</div>
+        <div class="socials">
+          <button type="button" class="social" aria-label="Iniciar con Google">G</button>
+          <button type="button" class="social" aria-label="Iniciar con GitHub">GH</button>
+          <button type="button" class="social" aria-label="Iniciar con Apple"></button>
+        </div>
+      </form>
+
+    </div>
+
+    <aside class="side" aria-hidden="true">
+      <div class="graphic">
+        <div class="cube" aria-hidden="true"></div>
+      </div>
+      <div class="muted">Diseño moderno · Animaciones suaves · Modo oscuro/claro</div>
+    </aside>
+  </div>
+
+  <script>
+    // Theme toggle
+    const body = document.body;
+    const themeBtn = document.getElementById('themeBtn');
+
+    function setTheme(t){
+      body.setAttribute('data-theme', t);
+      themeBtn.textContent = t === 'dark' ? '🌙' : '☀️';
+      localStorage.setItem('ui-theme', t);
+    }
+    const saved = localStorage.getItem('ui-theme') || 'dark';
+    setTheme(saved);
+
+    themeBtn.addEventListener('click', ()=>{
+      setTheme(body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+
+    // Form handling (demo)
+    const form = document.getElementById('loginForm');
+    form.addEventListener('submit', e =>{
+      e.preventDefault();
+      const email = form.email.value.trim();
+      if(!email || !form.password.value){
+        alert('Por favor completa los campos.');
+        return;
+      }
+      // micro-animation on submit
+      const btn = form.querySelector('.btn');
+      btn.animate([{transform:'scale(1)'},{transform:'scale(0.98)'},{transform:'scale(1)'}],{duration:260});
+
+      // fake success flow
+      btn.textContent = 'Accediendo...';
+      setTimeout(()=>{ btn.textContent = '¡Bienvenido!'; }, 900);
+      setTimeout(()=>{ btn.textContent = 'Iniciar sesión'; }, 2200);
+    });
+
+    // Interactive tilt effect for card
+    const card = document.getElementById('login-card');
+    card.addEventListener('mousemove', e =>{
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      card.style.transform = `perspective(900px) translateZ(0) rotateX(${ -y * 6 }deg) rotateY(${ x * 8 }deg)`;
+    });
+    card.addEventListener('mouseleave', ()=>{ card.style.transform = ''; });
+
+    // Accessibility: submit with Enter on inputs
+    document.querySelectorAll('input').forEach(i => i.addEventListener('keydown', e => { if(e.key === 'Enter') form.requestSubmit(); }));
+
+  </script>
+</body>
+</html>
